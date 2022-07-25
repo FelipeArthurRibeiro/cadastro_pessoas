@@ -46,7 +46,8 @@ class _CadastroState extends State<Cadastro> {
           actions: [
             TextButton(
                 onPressed: (){
-                  Navigator.pop(context, true);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 style: TextButton.styleFrom(primary: Colors.orange),
                 child: Text('Descatar')),
