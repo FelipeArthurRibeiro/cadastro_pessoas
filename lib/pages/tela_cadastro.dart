@@ -1,6 +1,7 @@
 import 'package:exe_4/model/pessoa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class Cadastro extends StatefulWidget {
   Cadastro({Key? key, this.pessoa}) : super(key: key);
@@ -34,6 +35,12 @@ class _CadastroState extends State<Cadastro> {
   }
 
   final formKey = GlobalKey<FormState>();
+
+  var maskFormatter = MaskTextInputFormatter(
+      mask: '(##) #####-####',
+      filter: { "#": RegExp(r'[0-9]') },
+      type: MaskAutoCompletionType.lazy
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +115,10 @@ class _CadastroState extends State<Cadastro> {
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),
                         ),
+                        keyboardType: TextInputType.emailAddress,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.singleLineFormatter
+                        ],
                       ),
 
                       SizedBox(height: 20),
@@ -127,9 +138,7 @@ class _CadastroState extends State<Cadastro> {
                           ),
                         ),
                         keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.singleLineFormatter
-                        ],
+                        inputFormatters: [maskFormatter],
                       ),
 
                       SizedBox(height: 20),

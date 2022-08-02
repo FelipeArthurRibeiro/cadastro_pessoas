@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<Pessoa> listaPessoas = [];
+  bool ordenar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,15 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text('Pessoas'),
         backgroundColor: Colors.orange,
+        actions: [
+          IconButton(
+              onPressed: (){
+                setState(() {
+                  ordenarLista();
+                });
+              },
+              icon: Icon(Icons.sort_by_alpha))
+        ],
       ),
       body: ListView.builder(
           shrinkWrap: true,
@@ -51,8 +61,26 @@ class _HomeState extends State<Home> {
                             child: Text('Cancelar')),
                         TextButton(
                             onPressed: (){
+                              Pessoa retorna = listaPessoas[item];
                               excluirDaLista(item);
                               Navigator.of(context).pop();
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Sucesso',),
+                                  backgroundColor: Colors.grey,
+                                  action: SnackBarAction(
+                                    label: 'Desfazer',
+                                    textColor: Colors.blue,
+                                    onPressed: (){
+                                      setState(() {
+                                        adicionaNaLista(retorna);
+                                      });
+                                    },
+                                  ),
+                                  duration: Duration(seconds: 5),
+                                )
+                              );
                             },
                             style: TextButton.styleFrom(primary: Colors.orange),
                             child: Text('Sim'))
@@ -88,6 +116,9 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+  adicionaNaLista(Pessoa retorna){
+      listaPessoas.add(retorna);
+  }
 
   excluirDaLista(int item){
     setState((){
@@ -101,4 +132,15 @@ class _HomeState extends State<Home> {
       listaPessoas[item] = pessoa_edit;
     });
   }
+
+  ordenarLista(){
+    if(!ordenar){
+      listaPessoas.sort((Pessoa a, Pessoa b) => a.nome.compareTo(b.nome));
+      ordenar = !ordenar;
+    } else {
+      listaPessoas = listaPessoas.reversed.toList();
+      ordenar = !ordenar;
+    }
+  }
 }
+
