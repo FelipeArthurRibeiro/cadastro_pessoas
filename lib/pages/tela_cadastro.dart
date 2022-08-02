@@ -46,27 +46,32 @@ class _CadastroState extends State<Cadastro> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Deseja descatar?'),
-          actions: [
-            TextButton(
-                onPressed: (){
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(primary: Colors.orange),
-                child: Text('Descatar')),
-            TextButton(
-              onPressed: (){
-                Navigator.pop(context, false);
-              },
-              style: TextButton.styleFrom(primary: Colors.orange),
-              child: Text('Não'),)
-          ],
-        ),);
-      return false;
+        if(_nomeController.text.isEmpty && _emailController.text.isEmpty && _telefoneController.text.isEmpty && _valueEstadoCivil == false){
+          Navigator.of(context).pop();
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) =>
+                AlertDialog(
+                  title: Text('Deseja descatar?'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        style: TextButton.styleFrom(primary: Colors.orange),
+                        child: Text('Descatar')),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: TextButton.styleFrom(primary: Colors.orange),
+                      child: Text('Não'),)
+                  ],
+                ),);
+        }
+        return false;
       },
       child: Scaffold(
         backgroundColor: Colors.grey[200],
