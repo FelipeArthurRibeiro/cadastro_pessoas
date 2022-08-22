@@ -1,3 +1,4 @@
+import 'package:exe_4/helper/pessoa_helper.dart';
 import 'package:exe_4/model/pessoa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -207,7 +208,10 @@ class _CadastroState extends State<Cadastro> {
         telefone: _telefoneController.text,
         estadoCivil: _valueEstadoCivil));
 
-    Navigator.pop(context, pessoa);
+    PessoaHelper.insert(pessoa).then((pessoaSalva){
+      Navigator.of(context).pop();
+      Navigator.pop(context, pessoaSalva);
+    });
   }
 
 }

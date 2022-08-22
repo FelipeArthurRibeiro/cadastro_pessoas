@@ -1,3 +1,4 @@
+import 'package:exe_4/helper/pessoa_helper.dart';
 import 'package:exe_4/model/pessoa.dart';
 import 'package:exe_4/pages/tela_cadastro.dart';
 import 'package:exe_4/widget/pessoa_item.dart';
@@ -14,6 +15,27 @@ class _HomeState extends State<Home> {
 
   List<Pessoa> listaPessoas = [];
   bool ordenar = false;
+
+  bool carregando = true;
+
+  @override
+  void initState(){
+    PessoaHelper.selectAll().then((value){
+      print(value);
+      listaPessoas = value;
+      setState((){
+        carregando = false;
+      });
+    });
+  }
+
+
+  _updateList() {
+    listaPessoas.sort((a, b) {
+      return a.nome.toLowerCase().compareTo(b.nome.toLowerCase());
+    });
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
