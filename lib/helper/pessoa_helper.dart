@@ -10,7 +10,7 @@ class PessoaHelper {
       return db;
     } else{
       _db = await openDatabase(
-        join(await getDatabasesPath(), "cadastro_pessoas.db"),
+        join(await getDatabasesPath(), "cadastro.db"),
         onCreate: (db, version){
           return db.execute('CREATE TABLE pessoas(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT, email TEXT, estado_civil INTEGER)',
           );

@@ -18,6 +18,7 @@ class _HomeState extends State<Home> {
 
   bool carregando = true;
 
+  /*
   @override
   void initState(){
     PessoaHelper.selectAll().then((value){
@@ -28,14 +29,7 @@ class _HomeState extends State<Home> {
       });
     });
   }
-
-
-  _updateList() {
-    listaPessoas.sort((a, b) {
-      return a.nome.toLowerCase().compareTo(b.nome.toLowerCase());
-    });
-    setState(() {});
-  }
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +133,12 @@ class _HomeState extends State<Home> {
     );
   }
   adicionaNaLista(Pessoa retorna){
-      listaPessoas.add(retorna);
+    PessoaHelper.insert(retorna);
+    listaPessoas.add(retorna);
   }
 
   excluirDaLista(int item){
+    PessoaHelper.deleteById(item);
     setState((){
       listaPessoas.removeAt(item);
     });
@@ -150,6 +146,7 @@ class _HomeState extends State<Home> {
 
   alterar(Pessoa pessoa, int item) async {
     final pessoa_edit = await Navigator.push(context, MaterialPageRoute(builder: (context) => Cadastro(pessoa: pessoa,)));
+    PessoaHelper.update(pessoa_edit);
     setState((){
       listaPessoas[item] = pessoa_edit;
     });
