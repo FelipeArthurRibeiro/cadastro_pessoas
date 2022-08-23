@@ -16,20 +16,13 @@ class _HomeState extends State<Home> {
   List<Pessoa> listaPessoas = [];
   bool ordenar = false;
 
+  PessoaHelper pessoaHelper = PessoaHelper();
   bool carregando = true;
 
-  /*
   @override
   void initState(){
-    PessoaHelper.selectAll().then((value){
-      print(value);
-      listaPessoas = value;
-      setState((){
-        carregando = false;
-      });
-    });
+    pessoaHelper.criarOuConectar();
   }
-   */
 
   @override
   Widget build(BuildContext context) {

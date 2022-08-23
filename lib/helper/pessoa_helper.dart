@@ -5,10 +5,7 @@ import 'package:sqflite/sqflite.dart';
 class PessoaHelper {
   static Database? _db;
 
-  static Future<Database?> get db async {
-    if(db != null){
-      return db;
-    } else{
+  criarOuConectar() async {
       _db = await openDatabase(
         join(await getDatabasesPath(), "cadastro.db"),
         onCreate: (db, version){
@@ -18,10 +15,9 @@ class PessoaHelper {
         version: 1
       );
     }
-  }
 
   static Future<Pessoa> insert(Pessoa pessoa) async{
-    Database? database = await db;
+    Database? database = await _db;
     pessoa.id = await database!.insert(
       'pessoas',
       pessoa.toMap(),
@@ -31,7 +27,7 @@ class PessoaHelper {
   }
 
   static Future<List<Pessoa>> selectAll() async{
-    Database? database = await db;
+    Database? database = await _db;
     final List<Map<String, dynamic>> maps = await database!.query('pessoas');
 
     List<Pessoa> listaPessoas = [];
@@ -42,7 +38,7 @@ class PessoaHelper {
   }
 
   static Future<void> update(Pessoa pessoa) async {
-    Database? database = await db;
+    Database? database = await _db;
     await database!.update(
         'pessoas',
         pessoa.toMap(),
@@ -52,7 +48,7 @@ class PessoaHelper {
   }
 
   static Future<void> deleteById(int id) async {
-    Database? database = await db;
+    Database? database = await _db;
     await database!.delete(
         'pessoas',
         where: 'id = ?',

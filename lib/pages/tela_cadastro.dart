@@ -180,8 +180,8 @@ class _CadastroState extends State<Cadastro> {
                                         child: Text('Cancelar')),
                                     TextButton(
                                       onPressed: (){
-                                        Navigator.of(context).pop();
                                         _addLista();
+                                        Navigator.of(context).pop();
                                       },
                                       style: TextButton.styleFrom(primary: Colors.orange),
                                       child: Text('OK'),)
@@ -206,12 +206,18 @@ class _CadastroState extends State<Cadastro> {
         nome: _nomeController.text,
         email: _emailController.text,
         telefone: _telefoneController.text,
-        estadoCivil: _valueEstadoCivil));
+        estadoCivil: _valueEstadoCivil)
+    );
+
+    if(widget.pessoa != null) {
+      pessoa.id = widget.pessoa!.id;
+    }
 
     PessoaHelper.insert(pessoa).then((pessoaSalva){
       Navigator.of(context).pop();
       Navigator.pop(context, pessoaSalva);
     });
+
   }
 
 }
