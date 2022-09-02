@@ -5,7 +5,7 @@ class Pessoa {
   late String telefone;
   late bool estadoCivil;
 
-  Pessoa({required this.nome, required this.email, required this.telefone, required this.estadoCivil});
+  Pessoa({this.id, required this.nome, required this.email, required this.telefone, required this.estadoCivil});
 
   Pessoa.fromMap(Map<String, dynamic> map){
     id = map['id'];

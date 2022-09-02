@@ -16,12 +16,19 @@ class _HomeState extends State<Home> {
   List<Pessoa> listaPessoas = [];
   bool ordenar = false;
 
-  PessoaHelper pessoaHelper = PessoaHelper();
+  PessoaHelperApi pessoaHelperApi = PessoaHelperApi();
   bool carregando = true;
 
   @override
   void initState(){
-    pessoaHelper.criarOuConectar();
+    buscarPessoas();
+  }
+
+  void buscarPessoas() async{
+    var returnPessoa = await pessoaHelperApi.selectAll();
+      setState((){
+        listaPessoas = returnPessoa;
+      });
   }
 
   @override
@@ -30,10 +37,10 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final pessoa = await Navigator.push(context, MaterialPageRoute(builder: (context)=> Cadastro()));
-            setState((){
-              listaPessoas.add(pessoa);
-            });
+          Pessoa pessoaAdd = await Navigator.push(context, MaterialPageRoute(builder: (context)=> Cadastro()));
+          setState((){
+            listaPessoas.add(pessoaAdd);
+          });
         },
         backgroundColor: Colors.orange,
         child: Icon(Icons.add),
@@ -71,7 +78,7 @@ class _HomeState extends State<Home> {
                         TextButton(
                             onPressed: (){
                               Pessoa retorna = listaPessoas[item];
-                              excluirDaLista(item);
+                              excluirDaLista(listaPessoas[item], item);
                               Navigator.of(context).pop();
 
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -111,9 +118,7 @@ class _HomeState extends State<Home> {
                       TextButton(
                           onPressed: (){
                             Navigator.of(context).pop();
-                            alterar(
-                                listaPessoas[item],
-                                item);
+                            alterar(listaPessoas[item], item);
                           },
                           style: TextButton.styleFrom(primary: Colors.orange),
                           child: Text('Sim'))
@@ -126,22 +131,23 @@ class _HomeState extends State<Home> {
     );
   }
   adicionaNaLista(Pessoa retorna){
-    PessoaHelper.insert(retorna);
-    listaPessoas.add(retorna);
+    PessoaHelperApi.insert(retorna);
+    setState((){
+      listaPessoas.add(retorna);
+    });
   }
 
-  excluirDaLista(int item){
-    PessoaHelper.deleteById(item);
+  excluirDaLista(Pessoa pessoa, int item){
+    PessoaHelperApi.deleteById(pessoa);
     setState((){
       listaPessoas.removeAt(item);
     });
   }
 
   alterar(Pessoa pessoa, int item) async {
-    final pessoa_edit = await Navigator.push(context, MaterialPageRoute(builder: (context) => Cadastro(pessoa: pessoa,)));
-    PessoaHelper.update(pessoa_edit);
+    Pessoa pessoaEdit = await Navigator.push(context, MaterialPageRoute(builder: (context) => Cadastro(pessoa: pessoa)));
     setState((){
-      listaPessoas[item] = pessoa_edit;
+      listaPessoas[item] = pessoaEdit;
     });
   }
 

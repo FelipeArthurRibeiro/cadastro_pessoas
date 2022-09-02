@@ -1,58 +1,52 @@
 import 'package:exe_4/model/pessoa.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:dio/dio.dart';
 
-class PessoaHelper {
-  static Database? _db;
+class PessoaHelperApi {
 
-  criarOuConectar() async {
-      _db = await openDatabase(
-        join(await getDatabasesPath(), "cadastro.db"),
-        onCreate: (db, version){
-          return db.execute('CREATE TABLE pessoas(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT, email TEXT, estado_civil INTEGER)',
-          );
-        },
-        version: 1
-      );
-    }
+  criarOuConectar() async {}
 
   static Future<Pessoa> insert(Pessoa pessoa) async{
-    Database? database = await _db;
-    pessoa.id = await database!.insert(
-      'pessoas',
-      pessoa.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+    await Dio().post(
+        'http://192.168.0.57:8080/pessoas',
+          data: {
+          'nome': pessoa.nome,
+          'email': pessoa.email,
+          'telefone': pessoa.telefone,
+          'estado_civil': !pessoa.estadoCivil ? 0 : 1
+        });
+    return pessoa;
+  }
+
+  Future<List<Pessoa>> selectAll() async{
+    List<Pessoa> pessoas = [];
+    var response = await Dio().get('http://192.168.0.57:8080/pessoas');
+    print(response.data);
+    for (final element in response.data){
+      pessoas.add(Pessoa(
+          id: element['id'],
+          nome: element['nome'],
+          email: element['email'],
+          telefone: element['telefone'],
+          estadoCivil: element['estado_civil'] == 0 ? false : true
+      ));
+    }
+    return pessoas;
+  }
+
+  static Future<Pessoa> update(Pessoa pessoa) async {
+    await Dio().put('http://192.168.0.57:8080/pessoas/${pessoa.id}',
+      data: {
+        'nome': pessoa.nome,
+        'email': pessoa.email,
+        'telefone': pessoa.telefone,
+        'estado_civil': !pessoa.estadoCivil ? 0 : 1
+      }
     );
     return pessoa;
   }
 
-  static Future<List<Pessoa>> selectAll() async{
-    Database? database = await _db;
-    final List<Map<String, dynamic>> maps = await database!.query('pessoas');
-
-    List<Pessoa> listaPessoas = [];
-    for(final element in maps){
-      listaPessoas.add(Pessoa.fromMap(element));
-    }
-    return listaPessoas;
-  }
-
-  static Future<void> update(Pessoa pessoa) async {
-    Database? database = await _db;
-    await database!.update(
-        'pessoas',
-        pessoa.toMap(),
-        where: 'id = ?',
-        whereArgs: [pessoa.id]
-    );
-  }
-
-  static Future<void> deleteById(int id) async {
-    Database? database = await _db;
-    await database!.delete(
-        'pessoas',
-        where: 'id = ?',
-        whereArgs: [id],
-    );
+  static Future<void> deleteById(Pessoa pessoa) async {
+    await Dio().delete('http://192.168.0.57:8080/pessoas/${pessoa.id}');
   }
 }

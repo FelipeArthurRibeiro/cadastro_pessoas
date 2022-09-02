@@ -181,7 +181,6 @@ class _CadastroState extends State<Cadastro> {
                                     TextButton(
                                       onPressed: (){
                                         _addLista();
-                                        Navigator.of(context).pop();
                                       },
                                       style: TextButton.styleFrom(primary: Colors.orange),
                                       child: Text('OK'),)
@@ -211,13 +210,17 @@ class _CadastroState extends State<Cadastro> {
 
     if(widget.pessoa != null) {
       pessoa.id = widget.pessoa!.id;
+      PessoaHelperApi.update(pessoa).then((pessoaEdit) {
+        Navigator.of(context).pop();
+        Navigator.pop(context, pessoaEdit);
+      });
+
+    } else {
+      PessoaHelperApi.insert(pessoa).then((pessoaAdd) {
+        Navigator.of(context).pop();
+        Navigator.pop(context, pessoaAdd);
+      });
     }
-
-    PessoaHelper.insert(pessoa).then((pessoaSalva){
-      Navigator.of(context).pop();
-      Navigator.pop(context, pessoaSalva);
-    });
-
   }
 
 }
